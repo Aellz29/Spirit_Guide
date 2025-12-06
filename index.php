@@ -21,9 +21,9 @@ session_start();
 
         <!-- Menu Tengah -->
         <nav class="hidden md:flex space-x-10 font-medium text-gray-700">
-          <a href="#home" class="hover:text-yellow-600 transition">Home</a>
-          <a href="#catalog" class="hover:text-yellow-600 transition">Catalog</a>
-          <a href="#about" class="hover:text-yellow-600 transition">About</a>
+          <a href="index.php#home" class="hover:text-yellow-600 transition">Home</a>
+<a href="index.php#catalog" class="hover:text-yellow-600 transition">Catalog</a>
+<a href="index.php#about" class="hover:text-yellow-600 transition">About</a>
         </nav>
 
         <!-- Login Button (Desktop) -->
@@ -56,9 +56,10 @@ session_start();
 
       <!-- Menu Mobile -->
       <div id="mobile-menu" class="hidden flex-col bg-white shadow-md md:hidden text-center space-y-4 py-4">
-        <a href="#home" class="hover:text-yellow-600 transition">Home</a>
-        <a href="#catalog" class="hover:text-yellow-600 transition">Catalog</a>
-        <a href="#about" class="hover:text-yellow-600 transition">About</a>
+        <a href="index.php#home" class="hover:text-yellow-600 transition">Home</a>
+<a href="index.php#catalog" class="hover:text-yellow-600 transition">Catalog</a>
+<a href="index.php#about" class="hover:text-yellow-600 transition">About</a>
+
 
         <?php if (!empty($_SESSION['user'])): ?> 
           <div class="px-4">
@@ -204,11 +205,64 @@ session_start();
 </section>
 
 
-    <!-- 🔹 FOOTER -->
-    <footer class="bg-gray-900 text-white text-center py-6">
-      <p>© 2025 Spirit Guide. All Rights Reserved.</p>
-    </footer>
+<footer class="bg-gray-900 text-white pt-12 pb-6 mt-10">
 
-    <script src="./src/js/navbar.js"></script>
-  </body>
-</html>
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10 text-center md:text-left">
+
+    <!-- BRAND -->
+    <div>
+      <h2 class="text-2xl font-bold text-yellow-500 mb-3">Spirit Guide</h2>
+      <p class="text-gray-400 text-sm">
+        Fashion • Food • Accessories  
+        Temukan gaya hidup terbaikmu hanya di Spirit Guide.
+      </p>
+    </div>
+
+    <!-- CONTACT -->
+    <div>
+      <h3 class="text-xl font-semibold text-yellow-500 mb-3">Temui Kami</h3>
+
+      <p class="text-gray-300 text-sm mb-2">
+        📍 Alamat:  Kampus 1, Jl. Cibogo No.Indah 3, Mekarjaya, Kec. Rancasari, Kota Bandung, Jawa Barat 40000
+      </p>
+
+      <p class="text-gray-300 text-sm mb-2">
+        📞 WhatsApp:
+        <a href="https://wa.me/628971566371" target="_blank" class="text-yellow-400 hover:underline">
+          +62 897-1566-371
+        </a>
+      </p>
+
+      <p class="text-gray-300 text-sm">
+        📧 Email:
+        <a href="mailto:spiritguide@egmail.com" class="text-yellow-400 hover:underline">
+          spiritguide@gmail.com
+        </a>
+      </p>
+    </div>
+
+    <!-- SOCIAL IMAGES -->
+    <div>
+      <h3 class="text-xl font-semibold text-yellow-500 mb-3">Ikuti Kami</h3>
+
+      <div class="flex items-center justify-center md:justify-start space-x-10">
+
+  <!-- Instagram -->
+  <a href="https://instagram.com" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" class="w-6 h-6" />
+  </a>
+
+  <!-- WhatsApp -->
+  <a href="https://wa.me/6280000000000" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="w-6 h-6" />
+  </a>
+
+  <!-- TikTok -->
+  <a href="https://tiktok.com" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046125.png" class="w-6 h-6" />
+  </a>
+
+</div>
+
+
+</footer>
