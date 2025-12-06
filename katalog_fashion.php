@@ -1,9 +1,8 @@
 <?php
 session_start();
-require "config/db.php"; // koneksi ke database
-
-// Ambil data fashion
-$query = $conn->query("SELECT * FROM katalog WHERE kategori = 'fashion'");
+require "config/db.php";
+// Ambil data hanya kategori Fashion
+$query = $conn->query("SELECT * FROM products WHERE category = 'Fashion' ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
@@ -13,13 +12,12 @@ $query = $conn->query("SELECT * FROM katalog WHERE kategori = 'fashion'");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katalog Fashion | Spirit Guide</title>
 
-    <!-- Tailwind CSS -->
     <link rel="stylesheet" href="src/css/style.css">
 </head>
 
 <body class="bg-gray-50 text-gray-800">
 
-<!-- 🔹 NAVBAR (SAMA DENGAN INDEX) -->
+<!-- NAVBAR (sama seperti index.php) -->
 <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-lg shadow-md z-50">
   <div class="max-w-7xl mx-auto px-6 flex justify-between items-center py-3">
 
@@ -40,16 +38,23 @@ $query = $conn->query("SELECT * FROM katalog WHERE kategori = 'fashion'");
 
     <!-- Login / Logout -->
     <div class="hidden md:block">
-      <?php if(isset($_SESSION["username"])): ?>
+      <?php if (!empty($_SESSION['user'])): ?>
+        <span class="mr-3 font-medium text-gray-700">
+          Halo, <?= htmlspecialchars($_SESSION['user']['username']); ?>
+        </span>
+
         <a href="logout.php"
-          class="px-4 py-2 rounded-full text-white transition bg-red-600 hover:bg-red-700"
-          style="background-color:#dc2626 !important;">
-          Logout
+           class="px-4 py-2 rounded-full text-white transition"
+           style="background-color:#dc2626 !important; display:inline-block;"
+           onmouseover="this.style.backgroundColor='#b91c1c'"
+           onmouseout="this.style.backgroundColor='#dc2626'">
+           Logout
         </a>
+
       <?php else: ?>
         <a href="login.php"
-          class="px-4 py-2 rounded-full text-white bg-yellow-600 hover:bg-yellow-700 transition">
-          Login
+           class="px-4 py-2 rounded-full text-white bg-yellow-600 hover:bg-yellow-700 transition">
+           Login
         </a>
       <?php endif; ?>
     </div>
@@ -63,17 +68,23 @@ $query = $conn->query("SELECT * FROM katalog WHERE kategori = 'fashion'");
 
   </div>
 
-  <!-- Menu Mobile -->
+  <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden flex-col bg-white shadow-md md:hidden text-center space-y-4 py-4">
     <a href="index.php" class="hover:text-yellow-600 transition">Home</a>
     <a href="index.php#catalog" class="hover:text-yellow-600 transition">Catalog</a>
     <a href="index.php#about" class="hover:text-yellow-600 transition">About</a>
 
-    <?php if(isset($_SESSION["username"])): ?>
+    <?php if (!empty($_SESSION['user'])): ?>
+      <p class="font-medium text-gray-700">Halo, <?= htmlspecialchars($_SESSION['user']['username']); ?></p>
+
       <a href="logout.php"
-        class="bg-red-600 text-white w-1/2 mx-auto px-4 py-2 rounded-full hover:bg-red-700 transition">
-        Logout
-      </a>
+           class="px-4 py-2 rounded-full text-white transition"
+           style="background-color:#dc2626 !important; display:inline-block;"
+           onmouseover="this.style.backgroundColor='#b91c1c'"
+           onmouseout="this.style.backgroundColor='#dc2626'">
+           Logout
+        </a>
+
     <?php else: ?>
       <a href="login.php"
         class="bg-yellow-600 text-white w-1/2 mx-auto px-4 py-2 rounded-full hover:bg-yellow-700 transition">
@@ -85,7 +96,7 @@ $query = $conn->query("SELECT * FROM katalog WHERE kategori = 'fashion'");
 
 
 
-<!-- 🔹 CONTENT -->
+<!-- CONTENT -->
 <section class="max-w-7xl mx-auto px-6 pt-32 pb-16">
 
   <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">
@@ -95,19 +106,25 @@ $query = $conn->query("SELECT * FROM katalog WHERE kategori = 'fashion'");
   <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
 
     <?php if ($query->num_rows == 0): ?>
-      <!-- Jika kosong -->
-      <p class="text-center text-gray-600 col-span-3">Belum ada katalog fashion.</p>
-    
+
+      <p class="text-center text-gray-600 col-span-3">Belum ada produk fashion.</p>
+
     <?php else: ?>
       <?php while($row = $query->fetch_assoc()): ?>
 
-      <!-- Card Produk -->
       <div class="shadow-lg bg-white rounded-xl overflow-hidden hover:shadow-2xl transition">
-        <img src="uploads/<?= $row['gambar']; ?>" class="w-full h-64 object-cover">
+
+        <!-- gambar produk -->
+        <img src="<?= htmlspecialchars($row['image']); ?>" 
+             class="w-full h-64 object-cover">
 
         <div class="p-5">
-          <h3 class="text-xl font-bold text-yellow-600"><?= $row['nama_katalog']; ?></h3>
-          <p class="text-gray-700 text-sm mt-2"><?= $row['deskripsi']; ?></p>
+          <h3 class="text-xl font-bold text-yellow-600"><?= htmlspecialchars($row['title']); ?></h3>
+          <p class="text-gray-700 text-sm mt-2"><?= htmlspecialchars($row['description']); ?></p>
+
+          <p class="mt-3 text-lg font-bold text-gray-900">
+            Rp <?= number_format($row['price'], 0, ',', '.'); ?>
+          </p>
         </div>
 
       </div>
@@ -119,9 +136,6 @@ $query = $conn->query("SELECT * FROM katalog WHERE kategori = 'fashion'");
 
 </section>
 
-
-
-<!-- 🔹 FOOTER -->
 <footer class="bg-gray-900 text-white text-center py-6 mt-10">
   <p>© 2025 Spirit Guide. All Rights Reserved.</p>
 </footer>
