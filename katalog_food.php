@@ -21,6 +21,7 @@ $result = mysqli_query($conn, $query);
 <body class="bg-gray-50 text-gray-800">
 
 <!-- 🔹 NAVBAR (SAMA DENGAN INDEX) -->
+ 
 <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-lg shadow-md z-50">
   <div class="max-w-7xl mx-auto px-6 flex justify-between items-center py-3">
 
@@ -40,20 +41,23 @@ $result = mysqli_query($conn, $query);
     </nav>
 
     <!-- Login / Logout -->
-    <div class="hidden md:block">
-      <?php if(isset($_SESSION["username"])): ?>
-        <a href="logout.php"
-          class="px-4 py-2 rounded-full text-white transition bg-red-600 hover:bg-red-700"
-          style="background-color:#dc2626 !important;">
+<div class="hidden md:block">
+  <?php if(isset($_SESSION["username"])): ?>
+      <!-- Jika SUDAH login -->
+      <a href="logout.php"
+         class="px-4 py-2 rounded-full text-white transition bg-red-600 hover:bg-red-700">
           Logout
-        </a>
-      <?php else: ?>
-        <a href="login.php"
-          class="px-4 py-2 rounded-full text-white bg-yellow-600 hover:bg-yellow-700 transition">
+      </a>
+
+  <?php else: ?>
+      <!-- Jika BELUM login -->
+      <a href="login.php"
+         class="px-4 py-2 rounded-full text-white transition bg-yellow-600 hover:bg-yellow-700">
           Login
-        </a>
-      <?php endif; ?>
-    </div>
+      </a>
+  <?php endif; ?>
+</div>
+
 
     <!-- Hamburger -->
     <button id="menu-btn" class="md:hidden flex flex-col justify-between w-6 h-5">
