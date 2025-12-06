@@ -40,7 +40,7 @@ $result = mysqli_query($conn, $query);
 
     <!-- Login / Logout -->
     <div class="hidden md:block">
-      <?php if(isset($_SESSION["username"])): ?>
+      <?php if(isset($_SESSION["user"])): ?>
         <a href="logout.php"
           class="px-4 py-2 rounded-full text-white transition bg-red-600 hover:bg-red-700"
           style="background-color:#dc2626 !important;">
