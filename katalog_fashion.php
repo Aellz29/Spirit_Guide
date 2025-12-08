@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "config/db.php";
+
 // Ambil data hanya kategori Fashion
 $query = $conn->query("SELECT * FROM products WHERE category = 'Fashion' ORDER BY id DESC");
 ?>
@@ -42,7 +43,6 @@ $query = $conn->query("SELECT * FROM products WHERE category = 'Fashion' ORDER B
         <span class="mr-3 font-medium text-gray-700">
           Halo, <?= htmlspecialchars($_SESSION['user']['username']); ?>
         </span>
-
         <a href="logout.php"
            class="px-4 py-2 rounded-full text-white transition"
            style="background-color:#dc2626 !important; display:inline-block;"
@@ -83,7 +83,7 @@ $query = $conn->query("SELECT * FROM products WHERE category = 'Fashion' ORDER B
            onmouseover="this.style.backgroundColor='#b91c1c'"
            onmouseout="this.style.backgroundColor='#dc2626'">
            Logout
-        </a>
+      </a>
 
     <?php else: ?>
       <a href="login.php"
@@ -112,9 +112,10 @@ $query = $conn->query("SELECT * FROM products WHERE category = 'Fashion' ORDER B
     <?php else: ?>
       <?php while($row = $query->fetch_assoc()): ?>
 
-      <div class="shadow-lg bg-white rounded-xl overflow-hidden hover:shadow-2xl transition">
+      <!-- CARD PRODUK + POPUP TRIGGER -->
+      <div onclick="openPopup('<?= htmlspecialchars($row['title']); ?>')"
+           class="shadow-lg bg-white rounded-xl overflow-hidden hover:shadow-2xl transition cursor-pointer">
 
-        <!-- gambar produk -->
         <img src="<?= htmlspecialchars($row['image']); ?>" 
              class="w-full h-64 object-cover">
 
@@ -136,11 +137,57 @@ $query = $conn->query("SELECT * FROM products WHERE category = 'Fashion' ORDER B
 
 </section>
 
+
+<!-- POPUP PEMESANAN -->
+<div id="orderPopup" 
+     class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+    <div class="bg-white w-80 p-6 rounded-xl shadow-xl text-center relative">
+
+        <!-- Tombol Close -->
+        <button onclick="closePopup()" 
+                class="absolute top-3 right-3 text-gray-600 text-xl font-bold">
+            ×
+        </button>
+
+        <h2 class="text-xl font-bold text-yellow-600 mb-3">Pesan Produk</h2>
+
+        <p class="text-gray-700 mb-4">
+            Anda akan memesan:<br>
+            <span id="popupProductName" class="font-semibold text-yellow-600"></span>
+        </p>
+
+        <a id="popupOrderBtn" target="_blank"
+           class="bg-green-600 text-white w-full block py-2 rounded-lg hover:bg-green-700 transition">
+           Pesan via WhatsApp
+        </a>
+    </div>
+</div>
+
+
+
 <footer class="bg-gray-900 text-white text-center py-6 mt-10">
   <p>© 2025 Spirit Guide. All Rights Reserved.</p>
 </footer>
 
 <script src="src/js/navbar.js"></script>
+
+
+<!-- SCRIPT POPUP -->
+<script>
+function openPopup(productName) {
+    document.getElementById("orderPopup").classList.remove("hidden");
+    document.getElementById("popupProductName").innerText = productName;
+
+    let nomorWA = "628971566371"; // Ganti dengan nomor asli
+    let pesan = encodeURIComponent("Halo, saya ingin memesan produk: " + productName);
+    document.getElementById("popupOrderBtn").href = "https://wa.me/628971566371" + nomorWA + "?text=" + pesan;
+}
+
+function closePopup() {
+    document.getElementById("orderPopup").classList.add("hidden");
+}
+</script>
 
 </body>
 </html>

@@ -1,9 +1,9 @@
 <?php
 session_start();
-include './config/db.php';
+require "./config/db.php";
 
-// Ambil data katalog kategori food
-$query = "SELECT * FROM katalog WHERE kategori = 'food' ORDER BY id DESC";
+// Ambil data katalog kategori food (dari tabel products)
+$query = "SELECT * FROM products WHERE category = 'Food' ORDER BY id DESC";
 $result = mysqli_query($conn, $query);
 ?>
 <!DOCTYPE html>
@@ -14,14 +14,10 @@ $result = mysqli_query($conn, $query);
     <title>Katalog Food | Spirit Guide</title>
     <link rel="stylesheet" href="./src/css/style.css">
 </head>
-<!-- Tailwind CSS -->
-    <link rel="stylesheet" href="src/css/style.css">
-</head>
 
 <body class="bg-gray-50 text-gray-800">
 
-<!-- 🔹 NAVBAR (SAMA DENGAN INDEX) -->
- 
+<!-- 🔹 NAVBAR (Sama dengan index.php) -->
 <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-lg shadow-md z-50">
   <div class="max-w-7xl mx-auto px-6 flex justify-between items-center py-3">
 
@@ -41,23 +37,22 @@ $result = mysqli_query($conn, $query);
     </nav>
 
     <!-- Login / Logout -->
-<div class="hidden md:block">
-  <?php if(isset($_SESSION["username"])): ?>
-      <!-- Jika SUDAH login -->
-      <a href="logout.php"
-         class="px-4 py-2 rounded-full text-white transition bg-red-600 hover:bg-red-700">
+    <div class="hidden md:block">
+      <?php if(isset($_SESSION["user"])): ?>
+        <span class="mr-3 font-medium text-gray-700">
+          Halo, <?= htmlspecialchars($_SESSION['user']['username']); ?>
+        </span>
+        <a href="logout.php"
+          class="px-4 py-2 rounded-full text-white transition bg-red-600 hover:bg-red-700">
           Logout
-      </a>
-
-  <?php else: ?>
-      <!-- Jika BELUM login -->
-      <a href="login.php"
-         class="px-4 py-2 rounded-full text-white transition bg-yellow-600 hover:bg-yellow-700">
+        </a>
+      <?php else: ?>
+        <a href="login.php"
+          class="px-4 py-2 rounded-full text-white bg-yellow-600 hover:bg-yellow-700 transition">
           Login
-      </a>
-  <?php endif; ?>
-</div>
-
+        </a>
+      <?php endif; ?>
+    </div>
 
     <!-- Hamburger -->
     <button id="menu-btn" class="md:hidden flex flex-col justify-between w-6 h-5">
@@ -68,13 +63,13 @@ $result = mysqli_query($conn, $query);
 
   </div>
 
-  <!-- Menu Mobile -->
+  <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden flex-col bg-white shadow-md md:hidden text-center space-y-4 py-4">
     <a href="index.php" class="hover:text-yellow-600 transition">Home</a>
     <a href="index.php#catalog" class="hover:text-yellow-600 transition">Catalog</a>
     <a href="index.php#about" class="hover:text-yellow-600 transition">About</a>
 
-    <?php if(isset($_SESSION["username"])): ?>
+    <?php if(isset($_SESSION["user"])): ?>
       <a href="logout.php"
         class="bg-red-600 text-white w-1/2 mx-auto px-4 py-2 rounded-full hover:bg-red-700 transition">
         Logout
@@ -88,8 +83,7 @@ $result = mysqli_query($conn, $query);
   </div>
 </header>
 
-
-<!-- 🔹 KONTEN -->
+<!-- 🔹 CONTENT -->
 <section class="pt-32 pb-16 max-w-6xl mx-auto px-4">
     <h2 class="text-3xl font-bold text-yellow-600 text-center mb-10">Katalog Food</h2>
 
@@ -97,15 +91,18 @@ $result = mysqli_query($conn, $query);
 
         <?php while ($row = mysqli_fetch_assoc($result)) : ?>
         <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition">
-            <img src="./uploads/<?php echo $row['gambar']; ?>" 
+            <img src="./<?php echo $row['image']; ?>" 
                  class="w-full h-56 object-cover">
 
             <div class="p-4">
                 <h3 class="text-xl font-semibold text-yellow-600">
-                    <?php echo $row['nama_katalog']; ?>
+                    <?php echo $row['title']; ?>
                 </h3>
                 <p class="text-gray-600 mt-2 text-sm">
-                    <?php echo $row['deskripsi']; ?>
+                    <?php echo $row['description']; ?>
+                </p>
+                <p class="text-yellow-700 font-semibold mt-3">
+                    Rp <?php echo number_format($row['price'], 0, ',', '.'); ?>
                 </p>
             </div>
         </div>
@@ -114,7 +111,7 @@ $result = mysqli_query($conn, $query);
     </div>
 </section>
 
-<!-- 🔹 FOOTER (SAMA SEPERTI INDEX) -->
+<!-- 🔹 FOOTER -->
 <footer class="bg-gray-900 text-white text-center py-6">
   <p>© 2025 Spirit Guide. All Rights Reserved.</p>
 </footer>
