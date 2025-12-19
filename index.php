@@ -11,75 +11,10 @@ session_start();
   </head>
   <body class="bg-white text-gray-800">
     <!-- 🔹 NAVBAR -->
-    <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-lg shadow-md z-50">
-      <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-        <!-- Logo -->
-        <div class="flex items-center space-x-2">
-          <img src="./src/img/SpiritGuide.jpg" alt="Spirit Guide" class="w-10 h-10 rounded-full" />
-          <h1 class="text-xl font-bold text-yellow-600 tracking-wide"><a href="index.php">Spirit Guide</a></h1>
-        </div>
-
-        <!-- Menu Tengah -->
-        <nav class="hidden md:flex space-x-10 font-medium text-gray-700">
-          <a href="index.php#home" class="hover:text-yellow-600 transition">Home</a>
-<a href="index.php#catalog" class="hover:text-yellow-600 transition">Catalog</a>
-<a href="index.php#about" class="hover:text-yellow-600 transition">About</a>
-        </nav>
-
-        <!-- Login Button (Desktop) -->
-        <div class="hidden md:block">
-          <?php if (!empty($_SESSION['user'])): ?>
-            <!-- tampilkan nama + logout -->
-            <span class="mr-3 font-medium text-gray-700">Halo, <?php echo htmlspecialchars($_SESSION['user']['username']); ?></span>
-            <a href="logout.php"
-   class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition"
-   style="background-color:#dc2626 !important;">
-   Logout
-</a>
-
-          <?php else: ?>
-            <a href="login.php"
-              class="bg-yellow-600 text-white px-4 py-2 rounded-full hover:bg-yellow-700 transition">
-              Login
-            </a>
-          <?php endif; ?>
-        </div>
-
-        <!-- Hamburger -->
-        <button id="menu-btn" class="md:hidden flex flex-col justify-between w-6 h-5 focus:outline-none">
-        <span class="block w-full h-0.5 bg-gray-700 rounded"></span>
-        <span class="block w-full h-0.5 bg-gray-700 rounded"></span>
-        <span class="block w-full h-0.5 bg-gray-700 rounded"></span>
-      </button>
-
-      </div>
-
-      <!-- Menu Mobile -->
-      <div id="mobile-menu" class="hidden flex-col bg-white shadow-md md:hidden text-center space-y-4 py-4">
-        <a href="index.php#home" class="hover:text-yellow-600 transition">Home</a>
-<a href="index.php#catalog" class="hover:text-yellow-600 transition">Catalog</a>
-<a href="index.php#about" class="hover:text-yellow-600 transition">About</a>
-
-
-        <?php if (!empty($_SESSION['user'])): ?> 
-          <div class="px-4">
-            <p class="mb-2 font-medium text-gray-700">Halo, <?php echo htmlspecialchars($_SESSION['user']['username']); ?></p>
-            <a href="logout.php"
-              class="bg-red-600 text-white w-1/2 mx-auto px-4 py-2 rounded-full hover:bg-red-700 transition">
-              Logout
-            </a>
-          </div>
-        <?php else: ?>
-          <a href="login.php"
-            class="bg-yellow-600 text-white w-1/2 mx-auto px-4 py-2 rounded-full hover:bg-yellow-700 transition">
-            Login
-          </a>
-        <?php endif; ?>
-      </div>
-    </header>
+    <?php include 'partials/navbar.php'; ?>
 
     <!-- 🔹 HERO SECTION -->
-    <section id="home" class="relative flex flex-col items-center justify-center text-center pt-32 pb-20 bg-gray-50 reveal">
+    <section id="home" class="relative flex flex-col items-center justify-center text-center pt-32 pb-20 bg-gray-50 reveal min-h-screen">
       <img src="./src/img/SpiritGuide.jpg" alt="Spirit Guide Hero"
         class="w-64 h-64 object-cover rounded-full shadow-lg mb-6 border-4 border-yellow-500" />
       <h2 class="text-4xl font-bold text-gray-900 mb-3">Welcome to <span class="text-yellow-600">Spirit Guide</span></h2>
@@ -101,20 +36,20 @@ session_start();
     </section>
 
 <!-- 🔹 CATALOG SECTION -->
-<section id="catalog" class="max-w-6xl mx-auto px-4 py-16 reveal">
+<section id="catalog" class="max-w-6xl mx-auto px-4 py-16 reveal pt-24 min-h-screen">
   <h3 class="text-3xl font-bold text-center text-gray-800 mb-10">Katalog Produk</h3>
 
   <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
 
     <!-- FASHION -->
     <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
-      <a href="katalog_fashion.php" class="block">
+      <a href="katalog.php?category=Fashion" class="block">
         <img src="./src/img/bajuF.jpg" alt="Fashion" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
       </a>
       
       <!-- Overlay dengan tombol selalu terlihat -->
       <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
-        <a href="katalog_fashion.php"
+        <a href="katalog.php?category=Fashion"
            class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
           Lihat Fashion
         </a>
@@ -128,13 +63,13 @@ session_start();
 
     <!-- FOOD -->
     <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
-      <a href="katalog_food.php" class="block">
+      <a href="katalog.php?category=Food" class="block">
         <img src="./src/img/saladbuah.jpg" alt="Food" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
       </a>
       
       <!-- Overlay dengan tombol selalu terlihat -->
       <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
-        <a href="katalog_food.php"
+        <a href="katalog.php?category=Food"
            class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
           Lihat Food
         </a>
@@ -148,13 +83,33 @@ session_start();
 
     <!-- AKSESORIS -->
     <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
-      <a href="katalog_aksesoris.php" class="block">
+      <a href="katalog.php?category=Aksesoris" class="block">
         <img src="./src/img/accesories.jpg" alt="Aksesoris" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
       </a>
       
+          <!-- OTHER -->
+    <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
+      <a href="katalog.php?category=Other" class="block">
+        <img src="./src/img/other.jpg" alt="Other" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
+      </a>
+
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
+        <a href="katalog.php?category=Other"
+           class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
+          Lihat Produk Lainnya
+        </a>
+      </div>
+
+      <div class="p-4 text-center">
+        <h4 class="text-xl font-semibold text-yellow-600">Other</h4>
+        <p class="text-gray-600 text-sm mt-2">Produk kategori lain yang tersedia di Spirit Guide.</p>
+      </div>
+    </div>
+
       <!-- Overlay dengan tombol selalu terlihat -->
       <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
-        <a href="katalog_aksesoris.php"
+        <a href="katalog.php?category=Aksesoris"
            class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
           Lihat Aksesoris
         </a>
@@ -171,7 +126,7 @@ session_start();
 
 
     <!-- About Section -->
-<section id="about" class="bg-white py-16">
+<section id="about" class="bg-white py-16 pt-24">
   <div class="container mx-auto px-6 text-center">
     <h2 class="text-3xl font-bold text-yellow-600 mb-6">About Spirit Guide</h2>
     <p class="text-gray-700 max-w-3xl mx-auto mb-10">
@@ -204,65 +159,7 @@ session_start();
   </div>
 </section>
 
+    <!-- 🔹 FOOTER -->
+    <?php include 'partials/footer.php'; ?>
 
-<footer class="bg-gray-900 text-white pt-12 pb-6 mt-10">
-
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10 text-center md:text-left">
-
-    <!-- BRAND -->
-    <div>
-      <h2 class="text-2xl font-bold text-yellow-500 mb-3">Spirit Guide</h2>
-      <p class="text-gray-400 text-sm">
-        Fashion • Food • Accessories  
-        Temukan gaya hidup terbaikmu hanya di Spirit Guide.
-      </p>
-    </div>
-
-    <!-- CONTACT -->
-    <div>
-      <h3 class="text-xl font-semibold text-yellow-500 mb-3">Temui Kami</h3>
-
-      <p class="text-gray-300 text-sm mb-2">
-        📍 Alamat:  Kampus 1, Jl. Cibogo No.Indah 3, Mekarjaya, Kec. Rancasari, Kota Bandung, Jawa Barat 40000
-      </p>
-
-      <p class="text-gray-300 text-sm mb-2">
-        📞 WhatsApp:
-        <a href="https://wa.me/628971566371" target="_blank" class="text-yellow-400 hover:underline">
-          +62 897-1566-371
-        </a>
-      </p>
-
-      <p class="text-gray-300 text-sm">
-        📧 Email:
-        <a href="mailto:spiritguide@egmail.com" class="text-yellow-400 hover:underline">
-          spiritguide@gmail.com
-        </a>
-      </p>
-    </div>
-
-    <!-- SOCIAL IMAGES -->
-    <div>
-      <h3 class="text-xl font-semibold text-yellow-500 mb-3">Ikuti Kami</h3>
-
-      <div class="flex items-center justify-center md:justify-start space-x-10">
-
-  <!-- Instagram -->
-  <a href="https://instagram.com" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" class="w-6 h-6" />
-  </a>
-
-  <!-- WhatsApp -->
-  <a href="https://wa.me/6280000000000" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="w-6 h-6" />
-  </a>
-
-  <!-- TikTok -->
-  <a href="https://tiktok.com" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046125.png" class="w-6 h-6" />
-  </a>
-
-</div>
-
-
-</footer>
+</body>

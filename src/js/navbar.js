@@ -4,14 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll("a[href^='#']");
   let isOpen = false;
 
+  // ❗ Guard (WAJIB)
+  if (!menuBtn || !mobileMenu) return;
+
   // 🔸 Toggle Hamburger Menu
   menuBtn.addEventListener("click", () => {
     isOpen = !isOpen;
+
     mobileMenu.classList.toggle("hidden");
     mobileMenu.classList.toggle("flex");
-    mobileMenu.classList.toggle("animate-fade-slide");
+
+    // animasi optional
+    mobileMenu.classList.add("animate-fade-slide");
 
     const bars = menuBtn.querySelectorAll("span");
+
     if (isOpen) {
       bars[0].classList.add("rotate-45", "translate-y-1.5");
       bars[1].classList.add("opacity-0");
@@ -23,37 +30,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🔸 Smooth Scroll Navigation
+  // 🔸 Smooth Scroll + Auto Close
   navLinks.forEach(link => {
-  link.addEventListener("click", e => {
-    const href = link.getAttribute("href");
+    link.addEventListener("click", e => {
+      const href = link.getAttribute("href");
 
-    // Jika bukan anchor (#...), biarkan default (biarkan pindah halaman)
-    if (!href.startsWith("#")) return;
+      if (!href.startsWith("#")) return;
 
-    e.preventDefault(); // hanya cegah untuk anchor #
+      e.preventDefault();
 
-    const targetId = href.substring(1);
-    const targetSection = document.getElementById(targetId);
+      const target = document.getElementById(href.substring(1));
+      if (target) {
+        window.scrollTo({
+          top: target.offsetTop - 70,
+          behavior: "smooth"
+        });
+      }
 
-    if (targetSection) {
-      window.scrollTo({
-        top: targetSection.offsetTop - 70,
-        behavior: "smooth"
-      });
-    }
+      // tutup menu mobile
+      if (isOpen) {
+        mobileMenu.classList.add("hidden");
+        mobileMenu.classList.remove("flex");
+        isOpen = false;
 
-    // Tutup menu mobile setelah klik
-    if (isOpen) {
-      mobileMenu.classList.add("hidden");
-      mobileMenu.classList.remove("flex");
-      isOpen = false;
-
-      const bars = menuBtn.querySelectorAll("span");
-      bars[0].classList.remove("rotate-45", "translate-y-1.5");
-      bars[1].classList.remove("opacity-0");
-      bars[2].classList.remove("-rotate-45", "-translate-y-1.5");
-    }
+        const bars = menuBtn.querySelectorAll("span");
+        bars[0].classList.remove("rotate-45", "translate-y-1.5");
+        bars[1].classList.remove("opacity-0");
+        bars[2].classList.remove("-rotate-45", "-translate-y-1.5");
+      }
+    });
   });
 });
-});
+// navbar.js — simpan di src/js/navbar.js

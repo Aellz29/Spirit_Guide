@@ -1083,12 +1083,80 @@ video {
   --tw-scale-y: 1.05;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-
-@media (min-width: 640px) {
-  .sm\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+html {
+  scroll-behavior: smooth;
+}
+@keyframes payment-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }
+
+.animate-payment {
+  width: max-content;
+  animation: payment-scroll 22s linear infinite;
+}
+
+.animate-payment:hover {
+  animation-play-state: paused;
+}
+/* ===== NAV LINK BASE ===== */
+.nav-link {
+  position: relative;
+  padding: 6px 0;
+  color: #374151; /* gray-700 */
+  transition: color 0.25s ease;
+}
+
+/* HOVER (DESKTOP & MOBILE) */
+.nav-link:hover {
+  color: #ca8a04; /* yellow-600 */
+}
+
+/* UNDERLINE ANIMASI */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background-color: #ca8a04;
+  transition: width 0.25s ease;
+}
+
+/* HOVER UNDERLINE (DESKTOP ONLY FEEL) */
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ACTIVE STATE (SCROLL / CLICK) */
+.nav-link.active {
+  color: #ca8a04;
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .nav-link {
+    padding: 10px 0;
+  }
+
+  .nav-link::after {
+    display: none; /* underline dimatiin di mobile */
+  }
+
+  .nav-link.active {
+    background-color: #fef3c7; /* yellow-100 */
+    border-radius: 8px;
+  }
+}
+
 
 @media (min-width: 768px) {
   .md\:block {
