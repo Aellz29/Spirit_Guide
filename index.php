@@ -7,6 +7,7 @@ session_start();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spirit Guide | Fashion • Food • Aksesoris</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="./src/css/style.css" rel="stylesheet" />
   </head>
   <body class="bg-white text-gray-800">
@@ -39,85 +40,65 @@ session_start();
 <section id="catalog" class="max-w-6xl mx-auto px-4 py-16 reveal pt-24 min-h-screen">
   <h3 class="text-3xl font-bold text-center text-gray-800 mb-10">Katalog Produk</h3>
 
-  <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
+  <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-8">
 
-    <!-- FASHION -->
     <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
       <a href="katalog.php?category=Fashion" class="block">
         <img src="./src/img/bajuF.jpg" alt="Fashion" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
       </a>
-      
-      <!-- Overlay dengan tombol selalu terlihat -->
-      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
-        <a href="katalog.php?category=Fashion"
-           class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+        <a href="katalog.php?category=Fashion" class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
           Lihat Fashion
         </a>
       </div>
-      
       <div class="p-4 text-center">
         <h4 class="text-xl font-semibold text-yellow-600">Fashion</h4>
         <p class="text-gray-600 text-sm mt-2">Tren terkini yang memadukan gaya dan kenyamanan.</p>
       </div>
     </div>
 
-    <!-- FOOD -->
     <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
       <a href="katalog.php?category=Food" class="block">
         <img src="./src/img/saladbuah.jpg" alt="Food" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
       </a>
-      
-      <!-- Overlay dengan tombol selalu terlihat -->
-      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
-        <a href="katalog.php?category=Food"
-           class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+        <a href="katalog.php?category=Food" class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
           Lihat Food
         </a>
       </div>
-
       <div class="p-4 text-center">
         <h4 class="text-xl font-semibold text-yellow-600">Food</h4>
         <p class="text-gray-600 text-sm mt-2">Nikmati cita rasa modern khas Spirit Guide.</p>
       </div>
     </div>
 
-    <!-- AKSESORIS -->
     <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
       <a href="katalog.php?category=Aksesoris" class="block">
         <img src="./src/img/accesories.jpg" alt="Aksesoris" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
       </a>
-      
-          <!-- OTHER -->
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+        <a href="katalog.php?category=Aksesoris" class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
+          Lihat Aksesoris
+        </a>
+      </div>
+      <div class="p-4 text-center">
+        <h4 class="text-xl font-semibold text-yellow-600">Aksesoris</h4>
+        <p class="text-gray-600 text-sm mt-2">Detail kecil yang melengkapi tampilanmu.</p>
+      </div>
+    </div>
+
     <div class="relative shadow-md rounded-xl overflow-hidden hover:shadow-xl transition group">
       <a href="katalog.php?category=Other" class="block">
         <img src="./src/img/other.jpg" alt="Other" class="w-full h-64 object-cover transition duration-500 group-hover:scale-105" />
       </a>
-
-      <!-- Overlay -->
-      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
-        <a href="katalog.php?category=Other"
-           class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
-          Lihat Produk Lainnya
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+        <a href="katalog.php?category=Other" class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
+          Lihat Lainnya
         </a>
       </div>
-
       <div class="p-4 text-center">
         <h4 class="text-xl font-semibold text-yellow-600">Other</h4>
-        <p class="text-gray-600 text-sm mt-2">Produk kategori lain yang tersedia di Spirit Guide.</p>
-      </div>
-    </div>
-
-      <!-- Overlay dengan tombol selalu terlihat -->
-      <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-100 transition duration-300">
-        <a href="katalog.php?category=Aksesoris"
-           class="bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-700 transition">
-          Lihat Aksesoris
-        </a>
-      </div>
-
-      <div class="p-4 text-center">
-        <h4 class="text-xl font-semibold text-yellow-600">Aksesoris</h4>
-        <p class="text-gray-600 text-sm mt-2">Detail kecil yang melengkapi tampilanmu.</p>
+        <p class="text-gray-600 text-sm mt-2">Produk kategori lain yang tersedia.</p>
       </div>
     </div>
 

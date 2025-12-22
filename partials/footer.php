@@ -1,4 +1,5 @@
 <footer class="bg-gray-900 text-white pt-12 pb-6 mt-16">
+  <script src="https://cdn.tailwindcss.com"></script>
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
     <!-- BRAND -->
@@ -52,7 +53,7 @@
           <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png"
                class="w-6 h-6 hover:scale-110 transition" />
         </a>
-        <a href="https://wa.me/62871566371" target="_blank">
+        <a href="https://wa.me/628971566371" target="_blank">
           <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
                class="w-6 h-6 hover:scale-110 transition" />
         </a>
@@ -64,40 +65,40 @@
     </div>
 
   </div>
-  <h4 class="text-sm font-semibold text-gray-300 mb-3 tracking-wide">
-  Metode Pembayaran
-  </h4>
-<!-- PAYMENT BOX -->
-<div class="mt-5">
-  <div class="relative bg-gray-800 rounded-lg px-4 py-3
-            overflow-hidden border border-gray-700
-            max-w-md mx-auto">
+  <div class="flex flex-col items-center md:items-start">
+  
+  <div class="w-full flex justify-center mt-5">
+  
+  <div class="relative bg-white/5 rounded-lg px-4 py-5 overflow-hidden border border-white/10 w-full max-w-[320px] mx-auto">
+    
+    <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4 border-b border-white/5 pb-2 text-center">
+      Metode Pembayaran
+    </h4>
 
-  <!-- FADE KIRI -->
-  <div class="pointer-events-none absolute left-0 top-0 h-full w-10
-              bg-gradient-to-r from-gray-800 to-transparent z-10"></div>
+    <div class="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-[#0a0f1c] to-transparent z-10"></div>
+    <div class="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-[#0a0f1c] to-transparent z-10"></div>
 
-  <!-- FADE KANAN -->
-  <div class="pointer-events-none absolute right-0 top-0 h-full w-10
-              bg-gradient-to-l from-gray-800 to-transparent z-10"></div>
-
-  <!-- ANIMASI -->
-  <div class="relative">
-    <div class="flex items-center gap-5 animate-payment">
-
-      <img src="assets/payment/bca.png"  class="h-10 opacity-75" />
-      <img src="assets/payment/bni.png"  class="h-10 opacity-75" />
-      <img src="assets/payment/bri.png"  class="h-10 opacity-75" />
-      <img src="assets/payment/ovo.png"  class="h-10 opacity-75" />
-      <img src="assets/payment/dana.png" class="h-10 opacity-75" />
-
+    <div class="relative">
+      <div class="flex items-center gap-8 animate-payment opacity-60">
+        <img src="assets/payment/bca.png"  class="h-5 w-auto brightness-0 invert" />
+        <img src="assets/payment/bni.png"  class="h-5 w-auto brightness-0 invert" />
+        <img src="assets/payment/bri.png"  class="h-5 w-auto brightness-0 invert" />
+        <img src="assets/payment/ovo.png"  class="h-5 w-auto brightness-0 invert" />
+        <img src="assets/payment/dana.png" class="h-5 w-auto brightness-0 invert" />
+        <img src="assets/payment/bca.png"  class="h-5 w-auto brightness-0 invert" />
+        <img src="assets/payment/bni.png"  class="h-5 w-auto brightness-0 invert" />
+      </div>
     </div>
   </div>
 </div>
 
+    <p class="text-gray-500 text-xs mt-6">
+      &copy; 2024 Spirit Guide. All rights reserved.
+    </p>
+
 
 </div>
 </div>
 
-
+<script src="src/js/footer.js"></script>
 </footer>
