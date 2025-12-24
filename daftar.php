@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 include './config/db.php';
@@ -8,11 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
+    $confirm_password = trim($_POST['confirm_password'] ?? '');
 
-    if ($username === '' || $email === '' || $password === '') {
+    if ($username === '' || $email === '' || $password === '' || $confirm_password === '') {
         $message = "Semua kolom wajib diisi.";
+    } elseif ($password !== $confirm_password) {
+        $message = "Password dan verifikasi password tidak sama.";
     } else {
-        // cek email atau username sudah digunakan
         $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1");
         $stmt->bind_param("ss", $username, $email);
         $stmt->execute();
@@ -23,11 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->close();
         } else {
             $stmt->close();
-            // hash password modern
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
             $ins = $conn->prepare("INSERT INTO users (username, email, password, role, created_at) VALUES (?, ?, ?, 'customer', NOW())");
             $ins->bind_param("sss", $username, $email, $hash);
+
             if ($ins->execute()) {
                 $message = "Pendaftaran berhasil. Silakan login.";
             } else {
@@ -40,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -72,15 +76,43 @@ $conn->close();
         <?php echo htmlspecialchars($message); ?>
       </div>
     <?php endif; ?>
+ <!-- // Form Registrasi User// -->
+   <form method="POST">
+  <input class="input-field" type="text" name="username" placeholder="Username" required>
 
-    <form method="POST">
-      <input class="input-field" type="text" name="username" placeholder="Username" required>
-      <input class="input-field" type="email" name="email" placeholder="Email" required>
-      <input class="input-field" type="password" name="password" placeholder="Password" required>
-      <button class="btn-submit" type="submit">Daftar Sekarang</button>
-    </form>
+  <input class="input-field" type="email" name="email" placeholder="Email" required>
+
+  <div class="password-wrapper">
+    <input class="input-field" type="password" id="password" name="password" placeholder="Password" required>
+  </div>
+
+  <div class="password-wrapper">
+    <input class="input-field" type="password" id="confirm_password" name="confirm_password" placeholder="Verifikasi Password" required>
+    <span class="check-icon" id="check-icon">✔</span>
+  </div>
+
+  <button class="btn-submit" type="submit">Daftar Sekarang</button>
+</form>
 
     <p style="margin-top:1rem; color:#ddd;">Sudah punya akun? <a href="login.php" style="color:#FFD700; font-weight:600;">Login</a></p>
   </div>
+<script>
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirm_password');
+const checkIcon = document.getElementById('check-icon');
+
+function validatePassword() {
+  if (confirmPassword.value !== "" && password.value === confirmPassword.value) {
+    checkIcon.style.display = 'block';
+  } else {
+    checkIcon.style.display = 'none';
+  }
+}
+
+password.addEventListener('input', validatePassword);
+confirmPassword.addEventListener('input', validatePassword);
+</script>
+
+
 </body>
 </html>
