@@ -1,24 +1,18 @@
+// 1. FUNGSI MODAL
 function openModal(img, title, priceFormatted, desc, stock, id, rawPrice) {
     const modal = document.getElementById('productModal');
     if(!modal) return;
 
-    // Load Data Produk ke Modal
     document.getElementById('modalImg').src = img;
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalPrice').textContent = 'Rp ' + priceFormatted;
     document.getElementById('modalDesc').textContent = desc || "Koleksi eksklusif Spirit Guide.";
 
-    // Update Status Stok
     const statusEl = document.getElementById('statusStock');
     const isReady = parseInt(stock) > 0;
     statusEl.innerText = isReady ? "In Stock" : "Out of Stock";
     statusEl.className = isReady ? "text-green-600 font-bold text-[10px]" : "text-red-600 font-bold text-[10px]";
 
-    // Simpan ID Produk untuk Form Review
-    const idInput = document.getElementById('review_product_id');
-    if(idInput) idInput.value = id;
-
-    // Event Tombol Add to Cart
     const modalBtn = document.getElementById('modalAddToCartBtn');
     if (modalBtn) {
         modalBtn.onclick = function() {
@@ -26,13 +20,9 @@ function openModal(img, title, priceFormatted, desc, stock, id, rawPrice) {
         };
     }
 
-    // Tampilkan Modal
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    document.body.style.overflow = 'hidden'; 
-
-    // Ambil Review dari Database
-    fetchReviews(id);
+    document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
@@ -44,11 +34,34 @@ function closeModal() {
     }
 }
 
+// 2. FUNGSI SEARCH REAL-TIME
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('productSearch');
+    const productCards = document.querySelectorAll('.product-card');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toUpperCase();
+            productCards.forEach(card => {
+                const title = card.querySelector('.product-title').textContent;
+                if (title.toUpperCase().indexOf(filter) > -1) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    }
+});
+
+// 3. FUNGSI REVIEWS
 async function fetchReviews(productId) {
     const container = document.getElementById('review-list');
-    if(!container) return;
+    const idInput = document.getElementById('review_product_id');
+    if(idInput) idInput.value = productId;
 
     try {
+        // Path tetap get_reviews.php karena file ini di root
         const response = await fetch(`get_reviews.php?id=${productId}`);
         const reviews = await response.json();
 
@@ -71,48 +84,28 @@ async function fetchReviews(productId) {
     }
 }
 
-// Handler Submit Form Review
-document.addEventListener('DOMContentLoaded', () => {
-    const rForm = document.getElementById('reviewForm');
-    if(rForm) {
-        rForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const res = await fetch('submit_review.php', { method: 'POST', body: formData });
-            const result = await res.json();
-            
-            if (result.status === 'success') {
-                this.reset();
-                fetchReviews(formData.get('product_id'));
-            }
-        });
+// Integrasi Review ke Modal
+const originalOpenModal = window.openModal;
+window.openModal = function(...args) {
+    originalOpenModal(...args);
+    fetchReviews(args[5]); // ID Produk
+};
+
+// Form Review Submit
+document.getElementById('reviewForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const res = await fetch('submit_review.php', { method: 'POST', body: formData });
+    const result = await res.json();
+    if (result.status === 'success') {
+        alert('Ulasan terkirim!');
+        this.reset();
+        fetchReviews(formData.get('product_id'));
     }
 });
 
-// Close Modal saat klik area luar
+// Close modal on outside click
 window.onclick = function(event) {
     const modal = document.getElementById('productModal');
     if (event.target == modal) closeModal();
 }
-// Fungsi Pencarian Real-time (Tambahkan di katalog.js)
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('productSearch');
-    const productCards = document.querySelectorAll('.product-card');
-
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const filter = this.value.toUpperCase();
-            
-            productCards.forEach(card => {
-                // Mencari teks di dalam tag h3 (Judul Produk)
-                const title = card.querySelector('h3').textContent || card.querySelector('h3').innerText;
-                
-                if (title.toUpperCase().indexOf(filter) > -1) {
-                    card.style.display = ""; // Tampilkan jika cocok
-                } else {
-                    card.style.display = "none"; // Sembunyikan jika tidak cocok
-                }
-            });
-        });
-    }
-});

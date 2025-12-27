@@ -70,9 +70,9 @@ require "config/db.php";
         </div>
     </main>
 
-    <script src="src/js/cart.js"></script>
-    <script src="src/js/checkout.js"></script>
-    <script src="src/js/katalog.js"></script>
-    <?php include 'partials/footer.php'; ?>
+<script src="src/js/cart.js"></script>
+<script src="src/js/katalog.js"></script>
+<script src="src/js/checkout.js?v=1.2"></script>
+<?php include 'partials/footer.php'; ?>
 </body>
 </html>
