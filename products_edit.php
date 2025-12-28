@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="message"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form action="<?= BASE_URL ?>core/update_product.php" method="POST">
       <label>Judul</label>
       <input type="text" name="title" value="<?= htmlspecialchars($product['title']) ?>" required>
 

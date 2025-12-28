@@ -1,149 +1,138 @@
-// Variable untuk menyimpan data sementara
 let pendingOrderData = null;
 
-// Fungsi Load Checkout (Tetap sama dengan milikmu yang sudah fixed)
+function getCartKey() {
+    const currentUID = window.USER_ID || 'guest';
+    return 'sg_cart_' + currentUID;
+}
+
 function loadCheckout() {
-    const cartKey = getCartKey();
-    const cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
+    const cart = JSON.parse(localStorage.getItem(getCartKey()) || '[]');
     const container = document.getElementById('checkout-items');
-    const totalEl = document.getElementById('total-price');
-    const subtotalEl = document.getElementById('subtotal');
+    let total = 0;
+    let html = '';
 
     if (!container) return;
     if (cart.length === 0) {
-        container.innerHTML = `<p class="text-center py-10 text-gray-400">Keranjang kosong.</p>`;
+        container.innerHTML = '<p class="text-center py-10 uppercase text-[10px] tracking-widest">Keranjang Kosong</p>';
         return;
     }
 
-    let total = 0;
-    let html = '';
     cart.forEach((item, index) => {
         let price = typeof item.price === 'string' ? parseInt(item.price.replace(/[^0-9]/g, '')) : item.price;
         total += (price * item.qty);
         html += `
-            <div class="flex items-center justify-between border-b pb-4">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div class="flex items-center gap-4">
-                    <img src="${item.img}" class="w-16 h-16 object-cover">
+                    <img src="${item.img}" class="w-16 h-20 object-cover rounded">
                     <div>
-                        <h4 class="text-xs font-bold uppercase">${item.title}</h4>
-                        <p class="text-[10px] text-gray-400">x${item.qty}</p>
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest">${item.title}</h4>
+                        <div class="flex items-center gap-2 mt-2">
+                            <button onclick="changeQty(${index}, -1)" class="w-6 h-6 border flex items-center justify-center hover:bg-black hover:text-white">-</button>
+                            <span class="text-[10px] font-bold">${item.qty}</span>
+                            <button onclick="changeQty(${index}, 1)" class="w-6 h-6 border flex items-center justify-center hover:bg-black hover:text-white">+</button>
+                        </div>
                     </div>
                 </div>
-                <p class="text-sm font-bold uppercase">Rp ${(price * item.qty).toLocaleString('id-ID')}</p>
+                <p class="text-[11px] font-bold tracking-widest">Rp ${(price * item.qty).toLocaleString('id-ID')}</p>
             </div>`;
     });
     container.innerHTML = html;
-    totalEl.innerText = `Rp ${total.toLocaleString('id-ID')}`;
-    subtotalEl.innerText = `Rp ${total.toLocaleString('id-ID')}`;
+    document.getElementById('total-price').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+    document.getElementById('subtotal').innerText = `Rp ${total.toLocaleString('id-ID')}`;
 }
 
-// Logika Form Submission Bertahap
-const checkoutForm = document.getElementById('checkoutForm');
-if (checkoutForm) {
-    checkoutForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const cartKey = getCartKey(); 
-        const cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
-        if (cart.length === 0) return alert("Keranjang masih kosong!");
-
-        const submitBtn = document.getElementById('submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = "MENGUNCI PESANAN...";
-
-        const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
-        const bankDetail = document.getElementById('bank_list').value;
-        let finalPayment = paymentType === 'QRIS' ? 'QRIS' : `Transfer ${bankDetail}`;
-
-        const formData = new FormData(this);
-        formData.append('cart_data', JSON.stringify(cart));
-        formData.append('payment', finalPayment);
-
-        try {
-            const response = await fetch('proses_pesanan.php', { method: 'POST', body: formData });
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                // Simpan data untuk dikirim ke WA nanti
-                pendingOrderData = { result, cart, finalPayment };
-
-                if (paymentType === 'QRIS') {
-                    document.getElementById('qris-modal').classList.remove('hidden');
-                } else {
-                    const bankDisplay = document.getElementById('modal-bank-detail');
-            if (bankDisplay) {
-                bankDisplay.innerText = bankDetail;
-            }
-            document.getElementById('bank-modal').classList.remove('hidden');
-        }
-    } else {
-        alert("Error: " + result.message);
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Sahkan Pesanan";
+// HANDLER SUBMIT UTAMA
+document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // MENCEGAH REFRESH HALAMAN
+    
+    const cartData = localStorage.getItem(getCartKey());
+    if (!cartData || JSON.parse(cartData).length === 0) {
+        alert("Keranjang kosong!");
+        return false;
     }
-} catch (err) {
-    console.error(err); // Untuk melihat error asli di console browser
-    alert("Terjadi kesalahan teknis saat memproses pesanan.");
-    submitBtn.disabled = false;
-}
-    });
-}
 
-// Fungsi Akhir ke WhatsApp
-function finalSubmitWhatsApp() {
-    if (!pendingOrderData) return;
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = "SEDANG MEMPROSES...";
+
+    const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+    const bankDetail = document.getElementById('bank_list').value;
+    let finalPayment = paymentType === 'QRIS' ? 'QRIS' : `Transfer ${bankDetail}`;
+
+    const formData = new FormData(this);
+    formData.append('cart_data', cartData);
+    formData.append('payment', finalPayment);
+
+    // KIRIM DATA KE PHP TANPA REFRESH
+    fetch('proses_pesanan.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === 'success') {
+            pendingOrderData = { result, cart: JSON.parse(cartData), finalPayment };
+            
+            // Buka Modal (Tanpa pindah halaman)
+            if (paymentType === 'QRIS') {
+                document.getElementById('qris-modal').classList.remove('hidden');
+            } else {
+                document.getElementById('modal-bank-detail').innerText = bankDetail;
+                document.getElementById('bank-modal').classList.remove('hidden');
+            }
+        } else {
+            alert("Error: " + result.message);
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Sahkan Pesanan";
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Terjadi kesalahan jaringan.");
+        submitBtn.disabled = false;
+    });
+});
+
+// UPLOAD BUKTI & WA
+async function finalSubmitWhatsApp(inputId) {
+    const fileInput = document.getElementById(inputId);
+    if (!fileInput.files[0]) return alert("Harap upload bukti!");
 
     const { result, cart, finalPayment } = pendingOrderData;
-    const nama = document.getElementById('nama').value;
-    const waUser = document.getElementById('whatsapp').value;
-    const alamat = document.getElementById('alamat').value;
+    const formData = new FormData();
+    formData.append('order_id', result.order_id);
+    formData.append('proof_image', fileInput.files[0]);
 
-    let listBarang = "";
-    cart.forEach((item, i) => {
-        let p = typeof item.price === 'string' ? parseInt(item.price.replace(/[^0-9]/g, '')) : item.price;
-        listBarang += `${i+1}. ${item.title} (x${item.qty})\n`;
-    });
+    try {
+        const upload = await fetch('upload_bukti.php', { method: 'POST', body: formData });
+        const uploadRes = await upload.json();
 
-    const teks = `*PESANAN BERHASIL - ID #${result.order_id}*\n` +
-                 `--------------------------------\n` +
-                 `*Nama:* ${nama}\n` +
-                 `*Alamat:* ${alamat}\n` +
-                 `*Metode:* ${finalPayment}\n` +
-                 `*Status:* Menunggu Verifikasi Pembayaran\n\n` +
-                 `*Barang:*\n${listBarang}\n` +
-                 `*TOTAL: Rp ${result.total.toLocaleString('id-ID')}*\n` +
-                 `--------------------------------\n` +
-                 `Saya sudah melakukan pembayaran. Mohon divalidasi.`;
+        if (uploadRes.status === 'success') {
+            let listBarang = cart.map(item => `- ${item.title} (x${item.qty})`).join('\n');
+            const teks = `*ORDER #${result.order_id}*\n\n${listBarang}\n\n*Total:* Rp ${result.total.toLocaleString('id-ID')}\n*Metode:* ${finalPayment}\n\nBukti sudah diupload.`;
+            
+            localStorage.removeItem(getCartKey()); // Bersihin keranjang di akhir
+            window.location.href = `https://wa.me/628971566371?text=${encodeURIComponent(teks)}`;
+        } else {
+            alert("Gagal upload bukti.");
+        }
+    } catch (err) {
+        alert("Error sistem.");
+    }
+}
 
-    const whatsappUrl = `https://wa.me/628971566371?text=${encodeURIComponent(teks)}`;
-    localStorage.removeItem(getCartKey());
-    window.location.href = whatsappUrl;
+window.changeQty = function(index, delta) {
+    let cart = JSON.parse(localStorage.getItem(getCartKey()) || '[]');
+    cart[index].qty += delta;
+    if (cart[index].qty <= 0) cart.splice(index, 1);
+    localStorage.setItem(getCartKey(), JSON.stringify(cart));
+    loadCheckout();
+}
+
+window.closeModal = function(id) {
+    document.getElementById(id).classList.add('hidden');
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').innerText = "Sahkan Pesanan";
 }
 
 document.addEventListener('DOMContentLoaded', loadCheckout);
-
-// Fungsi untuk menutup modal
-window.closeModal = function(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        
-        // Kembalikan tombol submit ke keadaan semula agar user bisa klik ulang
-        const submitBtn = document.getElementById('submit-btn');
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Sahkan Pesanan";
-        }
-    }
-}
-window.closeModal = function(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        const submitBtn = document.getElementById('submit-btn');
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Sahkan Pesanan";
-        }
-    }
-};

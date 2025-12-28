@@ -15,26 +15,43 @@ session_start();
     <?php include 'partials/navbar.php'; ?>
 
     <!-- 🔹 HERO SECTION -->
-    <section id="home" class="relative flex flex-col items-center justify-center text-center pt-32 pb-20 bg-gray-50 reveal min-h-screen">
-      <img src="./src/img/SpiritGuide.jpg" alt="Spirit Guide Hero"
-        class="w-64 h-64 object-cover rounded-full shadow-lg mb-6 border-4 border-yellow-500" />
-      <h2 class="text-4xl font-bold text-gray-900 mb-3">Welcome to <span class="text-yellow-600">Spirit Guide</span></h2>
+<section id="home" class="relative flex flex-col items-center justify-center text-center pt-32 pb-20 reveal min-h-screen overflow-hidden">
+  
+  <div class="absolute inset-0 z-0">
+    <video autoplay muted loop playsinline class="w-full h-full object-cover">
+      <source src="./assets/video/onlineShopping.mp4" type="video/mp4">
+    </video>
+    
+    <div class="absolute inset-0 bg-gradient-to-t from-transparent via-black/10 to-black/30"></div> 
+  </div>
 
-      <!-- sapaan jika user login -->
-      <?php if (!empty($_SESSION['user'])): ?>
-        <p class="text-gray-700 mb-4">Selamat datang, <span class="text-yellow-600 font-semibold"><?php echo htmlspecialchars($_SESSION['user']['username']); ?></span>!</p>
-      <?php endif; ?>
+  <div class="relative z-10 flex flex-col items-center px-4">
+    <img src="./src/img/SpiritGuide.jpg" alt="Spirit Guide Hero"
+      class="w-64 h-64 object-cover rounded-full shadow-2xl mb-6 border-4 border-yellow-500" />
+    
+    <h2 class="text-4xl md:text-5xl font-bold text-white mb-3 drop-shadow-lg">
+        Welcome to <span class="text-yellow-500">Spirit Guide</span>
+    </h2>
 
-      <p class="text-gray-600 max-w-lg mx-auto">
-        Temukan gaya hidupmu lewat <span class="text-yellow-600 font-medium">fashion</span>,
-        <span class="text-yellow-600 font-medium">makanan</span>, dan
-        <span class="text-yellow-600 font-medium">aksesoris</span> pilihan kami.
+    <?php if (!empty($_SESSION['user'])): ?>
+      <p class="text-gray-100 mb-4 text-lg">
+        Selamat datang, <span class="text-yellow-400 font-semibold"><?php echo htmlspecialchars($_SESSION['user']['username']); ?></span>!
       </p>
-      <a href="#catalog"
-        class="mt-6 bg-yellow-600 text-white px-6 py-3 rounded-full hover:bg-yellow-700 transition shadow-md">
-        Jelajahi Sekarang
-      </a>
-    </section>
+    <?php endif; ?>
+
+    <p class="text-gray-200 max-w-lg mx-auto text-lg leading-relaxed drop-shadow-md">
+      Temukan gaya hidupmu lewat <span class="text-yellow-400 font-medium italic">fashion</span>,
+      <span class="text-yellow-400 font-medium italic">makanan</span>, dan
+      <span class="text-yellow-400 font-medium italic">aksesoris</span> pilihan kami.
+    </p>
+    
+    <a href="#catalog"
+      class="mt-8 bg-yellow-600 text-white px-8 py-3 rounded-full hover:bg-yellow-500 transition-all duration-300 shadow-xl hover:scale-105 font-semibold">
+      Jelajahi Sekarang
+    </a>
+  </div>
+
+</section>
 
 <!-- 🔹 CATALOG SECTION -->
 <section id="catalog" class="max-w-6xl mx-auto px-4 py-16 reveal pt-24 min-h-screen">

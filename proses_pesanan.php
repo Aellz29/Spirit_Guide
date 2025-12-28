@@ -4,57 +4,49 @@ session_start();
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Pastikan database terkoneksi
-    if (!$conn) {
-        echo json_encode(['status' => 'error', 'message' => 'Koneksi database gagal']);
-        exit;
+    // 1. Ambil & Bersihkan Data
+    $name    = isset($_POST['nama']) ? mysqli_real_escape_string($conn, $_POST['nama']) : '';
+    $phone   = isset($_POST['whatsapp']) ? mysqli_real_escape_string($conn, $_POST['whatsapp']) : ''; 
+    $address = isset($_POST['address']) ? mysqli_real_escape_string($conn, $_POST['address']) : '';
+    $payment = isset($_POST['payment']) ? mysqli_real_escape_string($conn, $_POST['payment']) : '';
+    $cart_json = isset($_POST['cart_data']) ? $_POST['cart_data'] : '[]';
+    $cart = json_decode($cart_json, true);
+
+    if (empty($cart)) {
+        die(json_encode(['status' => 'error', 'message' => 'Keranjang kosong']));
     }
 
-    // Ambil data dari POST (pastikan nama field sesuai dengan di checkout.php)
-    $name    = mysqli_real_escape_string($conn, $_POST['nama']);
-    $phone   = mysqli_real_escape_string($conn, $_POST['whatsapp']); 
-    $address = mysqli_real_escape_string($conn, $_POST['address']); // Sesuaikan dengan name="address"
-    
-    // Default payment jika inputnya tidak ada di HTML
-    $payment = isset($_POST['payment']) ? mysqli_real_escape_string($conn, $_POST['payment']) : 'WhatsApp Transfer';
-    
-    $cart_data = json_decode($_POST['cart_data'], true);
-
-    if (empty($cart_data)) {
-        echo json_encode(['status' => 'error', 'message' => 'Data keranjang tidak terbaca']);
-        exit;
-    }
-
+    // 2. Hitung Total
     $total_final = 0;
-    foreach ($cart_data as $item) {
-        // Membersihkan harga jika masih dalam bentuk string dengan titik/Rp
+    foreach ($cart as $item) {
         $price = is_string($item['price']) ? (int)preg_replace('/[^0-9]/', '', $item['price']) : $item['price'];
         $total_final += ($price * $item['qty']);
     }
 
-    $user_id = $_SESSION['user']['id'] ?? "NULL";
+    // 3. User ID
+    $current_user_id = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
+    $db_user_id = ($current_user_id) ? $current_user_id : "NULL";
 
-    $query_order = "INSERT INTO orders (user_id, name, phone, address, total, payment_method, status, created_at) 
-                    VALUES ($user_id, '$name', '$phone', '$address', '$total_final', '$payment', 'verifying', NOW())";
+    // 4. QUERY INSERT (Urutan Kolom Sesuai Screenshot Lu)
+    $sql = "INSERT INTO orders (user_id, name, phone, address, total, payment_method, status, proof_image, created_at) 
+            VALUES ($db_user_id, '$name', '$phone', '$address', '$total_final', '$payment', 'pending', '', NOW())";
 
-    if (mysqli_query($conn, $query_order)) {
+    if (mysqli_query($conn, $sql)) {
         $order_id = mysqli_insert_id($conn);
-        foreach ($cart_data as $item) {
-            $p_id = $item['id'];
-            $qty = $item['qty'];
-            $price = is_string($item['price']) ? (int)preg_replace('/[^0-9]/', '', $item['price']) : $item['price'];
+
+        // 5. Simpan Item & Update Stok (Kalo ini udah jalan, kita keep)
+        foreach ($cart as $item) {
+            $p_id = mysqli_real_escape_string($conn, $item['id']);
+            $qty  = (int)$item['qty'];
+            $prc  = is_string($item['price']) ? (int)preg_replace('/[^0-9]/', '', $item['price']) : $item['price'];
             
-            mysqli_query($conn, "INSERT INTO order_items (order_id, product_id, qty, price) VALUES ('$order_id', '$p_id', '$qty', '$price')");
+            mysqli_query($conn, "INSERT INTO order_items (order_id, product_id, qty, price) VALUES ('$order_id', '$p_id', '$qty', '$prc')");
             mysqli_query($conn, "UPDATE products SET stock = stock - $qty WHERE id = '$p_id'");
         }
-        
-        // SANGAT PENTING: Kirim kembali total_final agar JavaScript tidak error
-        echo json_encode([
-            'status' => 'success', 
-            'order_id' => $order_id,
-            'total' => $total_final
-        ]);
+
+        echo json_encode(['status' => 'success', 'order_id' => $order_id, 'total' => $total_final]);
     } else {
+        // JIKA GAGAL, KITA TAMPILKAN ERROR MYSQL-NYA
         echo json_encode(['status' => 'error', 'message' => mysqli_error($conn)]);
     }
 }

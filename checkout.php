@@ -85,42 +85,37 @@ require "config/db.php";
         </div>
     </main>
 
-    <div id="qris-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm" onclick="closeModal('qris-modal')">
-    <div class="bg-white w-full max-w-md rounded-2xl p-8 text-center shadow-2xl" onclick="event.stopPropagation()">
-        <h3 class="text-lg font-bold uppercase tracking-widest mb-2">Scan QRIS</h3>
-        <p class="text-[10px] text-gray-400 uppercase mb-6">Silakan Scan dan Selesaikan Pembayaran</p>
+    <div id="qris-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-md rounded-2xl p-8 text-center shadow-2xl">
+        <h3 class="text-lg font-bold uppercase mb-2">Scan QRIS</h3>
+        <img src="./assets/images/Qris-Spiritguide.jpeg" class="w-48 h-48 mx-auto mb-4 border p-2">
         
-        <img src="./assets/images/Qris-Spiritguide.jpeg" class="w-64 h-64 mx-auto mb-6 border p-2 rounded-lg">
-        
-        <div class="space-y-3">
-            <button onclick="finalSubmitWhatsApp()" class="w-full bg-black text-white py-4 text-[11px] font-bold uppercase tracking-[0.3em]">
-                Saya Sudah Bayar
-            </button>
-            <button onclick="closeModal('qris-modal')" class="w-full bg-transparent text-gray-400 py-2 text-[10px] font-bold uppercase tracking-widest hover:text-black transition-all">
-                KEMBALI
-            </button>
+        <div class="mb-4 text-left">
+            <label class="block text-[10px] font-bold uppercase mb-1">Upload Bukti Transfer (Wajib)</label>
+            <input type="file" id="proof_qris" accept="image/*" class="w-full text-xs border p-2 rounded">
         </div>
+
+        <button onclick="finalSubmitWhatsApp('proof_qris')" class="w-full bg-black text-white py-4 text-[11px] font-bold uppercase tracking-[0.3em]">
+            Kirim Bukti & Selesaikan
+        </button>
     </div>
 </div>
 
-<div id="bank-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm" onclick="closeModal('bank-modal')">
-    <div class="bg-white w-full max-w-md rounded-2xl p-8 text-center shadow-2xl" onclick="event.stopPropagation()">
-        <h3 class="text-lg font-bold uppercase tracking-widest mb-2">Transfer Bank</h3>
-        <p class="text-[10px] text-gray-400 uppercase mb-6">Silakan Transfer ke Rekening Berikut</p>
-        
-        <div class="bg-gray-50 p-6 rounded-lg mb-6 border border-gray-100">
-            <p id="modal-bank-detail" class="text-sm font-bold tracking-widest text-gray-800"></p>
-            <p class="text-[9px] text-gray-400 mt-3 italic uppercase">*Pastikan nominal sesuai dengan total order</p>
+<div id="bank-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-md rounded-2xl p-8 text-center shadow-2xl">
+        <h3 class="text-lg font-bold uppercase mb-2">Transfer Bank</h3>
+        <div class="bg-gray-50 p-4 rounded mb-4">
+            <p id="modal-bank-detail" class="text-sm font-bold text-gray-800"></p>
         </div>
-        
-        <div class="space-y-3">
-            <button onclick="finalSubmitWhatsApp()" class="w-full bg-black text-white py-4 text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition-all">
-                Saya Sudah Transfer
-            </button>
-            <button onclick="closeModal('bank-modal')" class="w-full bg-transparent text-gray-400 py-2 text-[10px] font-bold uppercase tracking-widest hover:text-black transition-all">
-                KEMBALI
-            </button>
+
+        <div class="mb-4 text-left">
+            <label class="block text-[10px] font-bold uppercase mb-1">Upload Bukti Transfer (Wajib)</label>
+            <input type="file" id="proof_bank" accept="image/*" class="w-full text-xs border p-2 rounded">
         </div>
+
+        <button onclick="finalSubmitWhatsApp('proof_bank')" class="w-full bg-black text-white py-4 text-[11px] font-bold uppercase tracking-[0.3em]">
+            Kirim Bukti & Selesaikan
+        </button>
     </div>
 </div>
 
