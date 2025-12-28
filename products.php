@@ -58,23 +58,13 @@ $res = $conn->query("SELECT * FROM products ORDER BY id DESC");
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <title>Kelola Produk | Spirit Guide</title>
-  <link href="./src/css/style.css" rel="stylesheet">
-  <style>
-    body{font-family:Poppins, sans-serif; padding:30px; background:#060606; color:#fff;}
-    .wrap{max-width:1000px; margin:0 auto;}
-    .card{background:rgba(255,255,255,0.03); padding:16px; border-radius:12px; margin-bottom:16px;}
-    input, select, textarea { width:100%; padding:8px; margin:6px 0; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:#fff; color:#000;}
-    img.thumb{width:120px; border-radius:8px;}
-    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:linear-gradient(90deg,#FFD700,#FFA500);color:#000;text-decoration:none;font-weight:700;}
-    table{width:100%;border-collapse:collapse;margin-top:12px;}
-    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.04); text-align:left;}
-  </style>
+   <link href="./src/css/style_products.css" rel="stylesheet" >
+
 </head>
-<body>
+<body class="admin-theme">
   <div class="wrap">
     <h1 style="color:#FFD700">Kelola Produk</h1>
-
+    
     <?php if ($message): ?>
       <div style="padding:10px;background:rgba(34,197,94,0.2);color:#fff;border-radius:8px;margin-bottom:12px;"><?=htmlspecialchars($message)?></div>
     <?php endif; ?>
