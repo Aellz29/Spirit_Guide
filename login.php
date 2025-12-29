@@ -1,8 +1,8 @@
 <?php
 session_start();
-include './config/db.php'; // koneksi
+include './config/db.php'; // Pastikan koneksi db benar
 
-$message = ''; // agar selalu ada
+$message = ''; 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $identifier = trim($_POST['identifier'] ?? '');
@@ -11,24 +11,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($identifier === '' || $password === '') {
         $message = "Silakan isi semua kolom.";
     } else {
-        // Prepared statement: cari user berdasarkan username atau email
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1");
-        $stmt->bind_param("ss", $identifier, $identifier);
+        // FIX: Hanya cari user berdasarkan email untuk keamanan
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+        $stmt->bind_param("s", $identifier);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result && $result->num_rows === 1) {
             $user = $result->fetch_assoc();
-
-            // Verifikasi password:
-            // 1) hashed modern -> password_verify()
-            // 2) fallback md5 ($user['password'] menyimpan md5)
-            // 3) fallback plain text (jika masih ada)
             $dbpass = $user['password'];
 
+            // Verifikasi password (hashed, md5, atau plain text)
             if (password_verify($password, $dbpass) || md5($password) === $dbpass || $password === $dbpass) {
-                // login success
-                // Simpan session sebagai array (aman & konsisten)
+                // Login Success - Simpan ke Session
                 $_SESSION['user'] = [
                     'id' => $user['id'],
                     'username' => $user['username'],
@@ -49,13 +44,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $message = "Password salah.";
             }
         } else {
-            $message = "Username atau email tidak ditemukan.";
+            // Pesan error spesifik jika email tidak terdaftar
+            $message = "Email tidak ditemukan.";
         }
-
         $stmt->close();
     }
 }
-
 $conn->close();
 ?>
 
@@ -67,7 +61,6 @@ $conn->close();
   <title>Login | Spirit Guide</title>
   <link href="./src/css/style.css" rel="stylesheet">
   <style>
-    /* --- (tetap sama seperti yang kamu pakai) --- */
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #000;
@@ -135,6 +128,7 @@ $conn->close();
       margin-bottom: 15px;
       outline: none;
       transition: 0.2s;
+      box-sizing: border-box; /* Agar padding tidak merusak lebar */
     }
 
     .input-field:focus {
@@ -165,9 +159,8 @@ $conn->close();
       border-radius: 8px;
       margin-bottom: 15px;
       font-weight: 600;
+      background-color: rgba(239, 68, 68, 0.7); /* Merah Error */
     }
-
-    .msg-box.error { background-color: rgba(239, 68, 68, 0.7); }
 
     .footer-text {
       margin-top: 1rem;
@@ -192,16 +185,16 @@ $conn->close();
   <div class="bg-overlay"></div>
 
   <div class="form-container">
-    <h2>Login ke Spirit Guide</h2>
+    <h2>Login Spirit Guide</h2>
 
     <?php if (!empty($message)): ?>
-      <div class="msg-box error"><?php echo htmlspecialchars($message); ?></div>
+      <div class="msg-box"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
 
-    <form method="POST">
-      <input type="text" name="identifier" placeholder="Masukkan Username atau Email" required class="input-field">
+    <form method="POST" action="">
+      <input type="email" name="identifier" placeholder="Masukkan Alamat Email" required class="input-field">
       <input type="password" name="password" placeholder="Masukkan Password" required class="input-field">
-      <button type="submit" class="btn-submit">Masuk</button>
+      <button type="submit" class="btn-submit">Masuk Sekarang</button>
     </form>
 
     <p class="footer-text">
