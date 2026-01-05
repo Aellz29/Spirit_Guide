@@ -1,78 +1,65 @@
-/**
- * SISTEM KERANJANG PRIVATE - SPIRIT GUIDE
- * Fungsi: Memastikan setiap user memiliki wadah penyimpanan masing-masing.
- */
+// File: src/js/cart.js
 
-// 1. FUNGSI PENENTU WADAH (STORAGE KEY)
-// Fungsi ini membuat nama kunci unik, contoh: 'sg_cart_ail' atau 'sg_cart_guest'
-// Di file src/js/cart.js
 function getCartKey() {
-    // Jika login 'ail', return 'sg_cart_ail'
-    // Jika tidak login, return 'sg_cart_guest'
     const currentUID = window.USER_ID || 'guest';
     return 'sg_cart_' + currentUID;
 }
-// 2. FUNGSI TAMBAH KE KERANJANG
+
 function addToCart(item) {
-    const cartKey = getCartKey(); // Ambil kunci unik user aktif
+    const cartKey = getCartKey();
     try {
-        // Ambil data lama dari wadah user tersebut, jika belum ada buat array kosong []
         let cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
-        
-        // Cek apakah produk yang diklik sudah ada di keranjang user ini
         const idx = cart.findIndex(c => c.id == item.id);
         
+        // 1. Pastikan harga berupa ANGKA
+        let finalPrice = parseFloat(item.price);
+        // 2. TANGKAP HARGA ASLI (Ini yang dulu hilang)
+        let originalPrice = parseFloat(item.originalPrice) || 0; 
+
         if (idx > -1) {
-            cart[idx].qty += 1; // Jika sudah ada, cukup tambah jumlahnya
+            cart[idx].qty += 1;
+            cart[idx].price = finalPrice;
+            cart[idx].originalPrice = originalPrice; // Update harga jika berubah
         } else {
-            // Jika produk baru, masukkan object produk ke dalam array
             cart.push({
                 id: item.id,
                 title: item.title,
-                price: parseFloat(item.price) || 0,
+                price: finalPrice,
+                originalPrice: originalPrice, // SIMPAN KE MEMORI
                 img: item.img,
                 qty: 1
             });
         }
 
-        // Simpan kembali ke LocalStorage sesuai kunci unik user
         localStorage.setItem(cartKey, JSON.stringify(cart));
         
-        // Update angka merah (badge) di icon keranjang secara real-time
         if (window.updateCartBadge) window.updateCartBadge();
         
-        alert(item.title + " berhasil masuk ke keranjang pribadi Anda!");
+        alert(`Berhasil! ${item.title} masuk keranjang.`);
     } catch (e) {
         console.error("Gagal simpan keranjang:", e);
     }
 }
 
-// 3. FUNGSI UPDATE ANGKA (BADGE) NAVBAR
+// Update Badge (Tetap sama)
 window.updateCartBadge = function() {
-    const cartKey = getCartKey(); // Pastikan mengambil data dari wadah user yang benar
+    const cartKey = getCartKey(); 
     const cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
-    
-    // Menjumlahkan seluruh qty yang ada di dalam keranjang user
     const totalQty = cart.reduce((total, item) => total + (item.qty || 0), 0);
-    
     const badgeDesktop = document.getElementById('cart-badge-desktop');
     const badgeMobile = document.getElementById('cart-badge-mobile');
-
     const render = (el) => {
         if (el) {
             if (totalQty > 0) {
-                el.textContent = totalQty; // Tampilkan angka jika > 0
+                el.textContent = totalQty;
                 el.classList.remove('hidden');
-                el.classList.add('animate-bounce-cart'); // Animasi membal saat bertambah
+                el.classList.add('animate-bounce-cart');
             } else {
-                el.classList.add('hidden'); // Sembunyikan jika kosong
+                el.classList.add('hidden');
             }
         }
     };
-
     render(badgeDesktop);
     render(badgeMobile);
 };
-
-// Pastikan angka keranjang langsung muncul saat halaman pertama kali dibuka
 document.addEventListener('DOMContentLoaded', window.updateCartBadge);

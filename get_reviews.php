@@ -1,8 +1,28 @@
 <?php
 include 'config/db.php';
-$id = mysqli_real_escape_string($conn, $_GET['id']);
-$query = "SELECT * FROM product_reviews WHERE product_id = '$id' ORDER BY id DESC";
-$res = mysqli_query($conn, $query);
-$data = [];
-while($row = mysqli_fetch_assoc($res)) { $data[] = $row; }
-echo json_encode($data);
+header('Content-Type: application/json');
+
+$product_id = intval($_GET['id'] ?? 0);
+
+if ($product_id > 0) {
+    // Ambil data langsung dari tabel product_reviews
+    $stmt = $conn->prepare("SELECT * FROM product_reviews WHERE product_id = ? ORDER BY created_at DESC");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $reviews = [];
+    while($row = $result->fetch_assoc()) {
+        $reviews[] = [
+            'username' => htmlspecialchars($row['username']), // Ambil langsung dari kolom username
+            'rating' => (int)$row['rating'],
+            'comment' => htmlspecialchars($row['comment']),
+            'created_at' => date('d M Y', strtotime($row['created_at']))
+        ];
+    }
+    
+    echo json_encode($reviews);
+} else {
+    echo json_encode([]);
+}
+?>
