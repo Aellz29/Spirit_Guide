@@ -98,7 +98,7 @@ $reviewsRes = $conn->query($reviewQuery);
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 glass border-r border-white/5 lg:translate-x-0 sidebar-closed flex flex-col">
         <div class="p-8">
             <div class="flex items-center gap-4 mb-12">
-                <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-black font-black text-xl shadow-[0_0_20px_rgba(245,158,11,0.4)]">S</div>
+                <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-black font-black text-xl shadow-[0_0_20px_rgba(245,158,11,0.4)]"><img src="./src/img/SpiritGuide.jpg" class="w-12 h-12 rounded-xl object-cover shadow-[0_0_20px_rgba(245,158,11,0.4)] border-2 border-amber-500"></div>
                 <div>
                     <h2 class="font-bold text-lg tracking-tight text-white leading-none">SPIRIT GUIDE</h2>
                     <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-1">Admin Panel</p>
