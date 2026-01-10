@@ -6,9 +6,24 @@ $isLoggedIn = isset($_SESSION['user']);
 // AMBIL ID USER UNTUK JS AGAR KERANJANG SINKRON
 $userID = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 'guest';
 
+// DEFAULT DATA (KOSONG JIKA TAMU)
 $userData = [
-    'name' => $isLoggedIn ? $_SESSION['user']['username'] : '',
+    'name' => '',
+    'phone' => '',
+    'address' => ''
 ];
+
+// JIKA LOGIN, AMBIL DATA DARI DATABASE
+if ($isLoggedIn) {
+    $uid = $_SESSION['user']['id'];
+    $query = $conn->query("SELECT username, phone, address FROM users WHERE id = $uid");
+    if ($query->num_rows > 0) {
+        $data = $query->fetch_assoc();
+        $userData['name'] = $data['username'];
+        $userData['phone'] = $data['phone'];
+        $userData['address'] = $data['address'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -21,20 +36,12 @@ $userData = [
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8F9FA; color: #111; }
-        
-        /* Smooth Scroll & Transitions */
         html { scroll-behavior: smooth; }
         .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 300ms; }
-        
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
-        /* Animation untuk Hemat */
         @keyframes pulse-green { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
         .animate-pulse-green { animation: pulse-green 2s infinite; }
-        
-        /* Radio Button Styling */
         input[type="radio"]:checked + div { border-color: #f59e0b; background-color: #fffbeb; }
         input[type="radio"]:checked + div .check-icon { opacity: 1; transform: scale(1); }
     </style>
@@ -73,7 +80,6 @@ $userData = [
                             <span class="bg-black text-white w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold">1</span>
                             <h2 class="text-lg font-bold uppercase tracking-widest text-gray-900">Keranjang Belanja</h2>
                         </div>
-                        
                         <div id="checkout-items" class="space-y-6">
                             <div class="flex flex-col items-center justify-center py-12 text-gray-400">
                                 <i class="fa fa-spinner fa-spin text-2xl mb-3"></i>
@@ -112,7 +118,6 @@ $userData = [
                                     </div>
                                     <div>
                                         <h3 class="font-bold text-gray-900 uppercase tracking-wide">Transfer Bank</h3>
-                                        
                                         <div class="mt-2 relative">
                                             <select id="bank_list" onclick="document.querySelector('input[value=\'Bank Transfer\']').checked = true" 
                                                 class="w-full bg-transparent border-b border-gray-300 py-1 pr-6 text-[11px] font-bold uppercase outline-none focus:border-amber-500 cursor-pointer appearance-none">
@@ -146,7 +151,7 @@ $userData = [
 
                             <div class="group">
                                 <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 group-focus-within:text-amber-500 transition-colors">WhatsApp</label>
-                                <input type="tel" name="whatsapp" placeholder="08..." required 
+                                <input type="tel" name="whatsapp" value="<?= htmlspecialchars($userData['phone']) ?>" placeholder="08..." required 
                                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all placeholder-gray-300">
                             </div>
 
@@ -154,7 +159,7 @@ $userData = [
                                 <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 group-focus-within:text-amber-500 transition-colors">Alamat Pengiriman</label>
                                 <textarea name="address" required rows="3" 
                                     class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all resize-none placeholder-gray-300"
-                                    placeholder="Jalan, No Rumah, Kecamatan..."></textarea>
+                                    placeholder="Jalan, No Rumah, Kecamatan..."><?= htmlspecialchars($userData['address']) ?></textarea>
                             </div>
 
                             <div id="summary-area" class="mt-8 pt-6 border-t-2 border-dashed border-gray-100">

@@ -200,6 +200,7 @@ $conn->close();
     <p class="footer-text">
       Belum punya akun? <a href="daftar.php">Daftar sekarang</a>
     </p>
+    <p><a href="lupa_password.php" class="text-xs font-bold text-blue-600">Lupa Password?</a></p>
   </div>
 </body>
 </html>
